@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Цветочный магазин «Букетная феерия»{% endblock %}</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Montserrat', sans-serif; }
+        h1, h2, h3, .logo { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-green-50 to-white min-h-screen flex flex-col">
+    <nav class="bg-emerald-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="{% url 'home' %}" class="logo text-2xl font-bold text-amber-300 hover:text-amber-200 transition-colors duration-300">
+                <i class="fas fa-seedling mr-2"></i>Букетная феерия
+            </a>
+            <div class="flex items-center space-x-6">
+                <a href="{% url 'home' %}#catalog" class="hover:text-amber-300 transition-colors duration-300">Каталог</a>
+                <a href="{% url 'home' %}#order" class="hover:text-amber-300 transition-colors duration-300">Заказать</a>
+                <a href="{% url 'home' %}#contacts" class="hover:text-amber-300 transition-colors duration-300">Контакты</a>
+                {% if user.is_authenticated %}
+                    <a href="/admin/" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105">
+                        Админ-панель
+                    </a>
+                    <form method="post" action="{% url 'logout' %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-red-300 hover:text-red-200 transition-colors duration-300">
+                            Выйти
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-amber-300 hover:text-amber-200 transition-colors duration-300">
+                        Войти
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="bg-emerald-900 text-white py-8 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-amber-300">О нас</h3>
+                    <p class="text-emerald-200">Дарим эмоции через цветы с 2015 года. Каждый букет — это история любви, заботы и внимания.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-amber-300">Контакты</h3>
+                    <p class="text-emerald-200"><i class="fas fa-phone mr-2"></i>+7 (999) 123-45-67</p>
+                    <p class="text-emerald-200"><i class="fas fa-envelope mr-2"></i>info@buket-fee.ru</p>
+                    <p class="text-emerald-200"><i class="fas fa-map-marker-alt mr-2"></i>Москва, ул. Цветочная, 15</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-amber-300">Мы в соцсетях</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-2xl text-amber-300 hover:text-amber-200 transition-colors duration-300"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-2xl text-amber-300 hover:text-amber-200 transition-colors duration-300"><i class="fab fa-vk"></i></a>
+                        <a href="#" class="text-2xl text-amber-300 hover:text-amber-200 transition-colors duration-300"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-emerald-700 mt-8 pt-6 text-center text-emerald-300">
+                <p>© 2023 Цветочный магазин «Букетная феерия». Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    {% if messages %}
+        <div class="fixed bottom-4 right-4 z-50 space-y-2">
+            {% for message in messages %}
+                <div class="bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-xl transform transition-all duration-500 ease-out {% if message.tags == 'error' %}bg-red-600{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</body>
+</html>
